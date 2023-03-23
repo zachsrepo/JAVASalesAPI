@@ -18,6 +18,13 @@ public class OrderController {
 	@Autowired
 	private OrderRepository ordRepo;
 	
+	
+	
+	@GetMapping("reviews")
+	public ResponseEntity<Iterable<Order>> getOrdersInReview(){
+		Iterable<Order> ordersInReview = ordRepo.findByStatus(Status_Review);
+		return new ResponseEntity<Iterable<Order>>(ordersInReview, HttpStatus.OK);
+	}
 	@GetMapping
 	public ResponseEntity<Iterable<Order>> getOrders(){
 		Iterable<Order> orders = ordRepo.findAll();
@@ -33,8 +40,28 @@ public class OrderController {
 	}
 	@PostMapping
 	public ResponseEntity<Order> postOrder(@RequestBody Order order){
+		order.setStatus(Status_New);
 		Order newOrder = ordRepo.save(order);
 		return new ResponseEntity<Order>(newOrder, HttpStatus.CREATED);
+	}
+	@SuppressWarnings("rawtypes")
+	@PutMapping("review/{id}")
+	public ResponseEntity reviewOrder(@PathVariable int id, @RequestBody Order order) {
+		String newStatus = order.getTotal()	<= 100 ? Status_Approved : Status_Review;
+		order.setStatus(newStatus);
+		return putOrder(id, order);
+	}
+	@SuppressWarnings("rawtypes")
+	@PutMapping("reject/{id}")
+	public ResponseEntity rejectOrder(@PathVariable int id, @RequestBody Order order) {
+		order.setStatus(Status_Rejected);
+		return putOrder(id,order);
+	}
+	@SuppressWarnings("rawtypes")
+	@PutMapping("approve/{id}")
+	public ResponseEntity approveOrder(@PathVariable int id, @RequestBody Order order) {
+		order.setStatus(Status_Approved);
+		return putOrder(id,order);
 	}
 	@SuppressWarnings("rawtypes")
 	@PutMapping("{id}")
