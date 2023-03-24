@@ -1,5 +1,6 @@
 package com.maxtrain.salesjava.orderline;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.maxtrain.salesjava.item.Item;
 import com.maxtrain.salesjava.order.Order;
 
@@ -17,11 +18,14 @@ public class Orderline {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private int quantity;
+	
 	@ManyToOne(optional=false)
-	@JoinColumn(name="itemId", columnDefinition="int")
+	@JoinColumn(name="itemId")
 	private Item item;
+	
+	@JsonBackReference
 	@ManyToOne(optional=false)
-	@JoinColumn(name="orderId", columnDefinition="int")
+	@JoinColumn(name="orderId")
 	private Order order;
 	
 	public int getId() {

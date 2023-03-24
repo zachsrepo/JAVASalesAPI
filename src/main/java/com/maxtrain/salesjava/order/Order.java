@@ -1,8 +1,11 @@
 package com.maxtrain.salesjava.order;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.maxtrain.salesjava.customer.Customer;
+import com.maxtrain.salesjava.orderline.Orderline;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,7 +25,7 @@ public class Order {
 	private int id;
 	@Column(columnDefinition="date NOT NULL")
 	private LocalDate date;
-	@Column(length=50, nullable = false)
+	@Column(length=50, nullable=false)
 	private String description;
 	@Column(length=30, nullable=false)
 	private String status;
@@ -30,6 +34,18 @@ public class Order {
 	@ManyToOne(optional=false)
 	@JoinColumn(name="customerId", columnDefinition="int")
 	private Customer customer;
+	
+	@JsonManagedReference
+	@OneToMany(mappedBy="order")
+	private List<Orderline> orderlines;
+	public List<Orderline>getOrderlines(){
+		return orderlines;
+	}
+	public void setOrderlines(List<Orderline> orderlines) {
+		this.orderlines = orderlines;
+	}
+	
+	
 	public int getId() {
 		return id;
 	}
